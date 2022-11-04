@@ -1,0 +1,66 @@
+USE AP
+GO
+---SUB QUERIES
+SELECT * FROM Vendors 
+GO
+SELECT * FROM Invoices
+GO
+SELECT * FROM Vendors WHERE VendorID  IN (SELECT VendorID FROM Invoices)
+GO
+SELECT * FROM Vendors WHERE VendorID  NOT IN (SELECT VendorID FROM Invoices)
+--CORELATE SUB Q
+SELECT * FROM Invoices WHERE PaymentTotal=(SELECT MAX(PaymentTotal)FROM Invoices)
+GO
+--USE ANY,SOME,ALL
+CREATE DATABASE R_53
+GO
+CREATE TABLE Trainee
+(
+	id INT
+	
+)
+GO
+INSERT INTO Trainee VALUES(1)
+INSERT INTO Trainee VALUES(2)
+INSERT INTO Trainee VALUES(3)
+INSERT INTO Trainee VALUES(4)
+GO
+IF 2< SOME(SELECT id FROM Trainee)
+PRINT 'TRUE'
+	ELSE
+PRINT 'FALSE'
+GO
+IF(2<ALL(SELECT ID FROM Trainee))
+PRINT 'TRUE'
+ ELSE
+PRINT 'FALSE'
+GO
+--NOTE SOME & ANY SAME WORK
+IF(0<ALL (SELECT id FROM Trainee))
+PRINT 'TRUE'
+	ELSE
+PRINT 'FALSE'
+GO
+--USE EXIST
+USE AP
+GO
+SELECT * FROM Vendors 
+ WHERE EXISTS
+(
+	SELECT * FROM Invoices WHERE Vendors.VendorID=Invoices.InvoiceID
+)
+GO
+SELECT * FROM Vendors 
+ WHERE NOT EXISTS
+(
+	SELECT * FROM Invoices WHERE Vendors.VendorID=Invoices.InvoiceID
+)
+GO
+--CTE
+WITH C_work
+AS
+(
+SELECT InvoiceID,InvoiceDate,InvoiceTotal FROM Invoices
+)
+SELECT * FROM C_work 
+GO
